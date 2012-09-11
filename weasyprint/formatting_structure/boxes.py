@@ -240,6 +240,9 @@ class ParentBox(Box):
             if new_box.bookmark_level:
                 del new_box.bookmark_level
         new_box._remove_decoration(not is_start, not is_end)
+        d = new_box.__dict__
+        d.pop('preferred_width', 0)
+        d.pop('preferred_minimum_width', 0)
         return new_box
 
     def descendants(self):
@@ -391,6 +394,9 @@ class TextBox(InlineLevelBox):
         assert text
         new_box = self.copy()
         new_box.text = text
+        d = new_box.__dict__
+        d.pop('preferred_width', 0)
+        d.pop('preferred_minimum_width', 0)
         return new_box
 
 

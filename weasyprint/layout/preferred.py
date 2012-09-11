@@ -38,19 +38,26 @@ def preferred_minimum_width(context, box, outer=True):
     This is the width by breaking at every line-break opportunity.
 
     """
+    result = getattr(box, 'preferred_minimum_width', None)
+    if result is not None:
+        return result
+
     if isinstance(box, boxes.BlockContainerBox):
         if box.is_table_wrapper:
-            return table_preferred_minimum_width(context, box, outer)
+            result = table_preferred_minimum_width(context, box, outer)
         else:
-            return block_preferred_minimum_width(context, box, outer)
+            result = block_preferred_minimum_width(context, box, outer)
     elif isinstance(box, (boxes.InlineBox, boxes.LineBox)):
-        return inline_preferred_minimum_width(context, box, outer)
+        result = inline_preferred_minimum_width(context, box, outer)
     elif isinstance(box, boxes.ReplacedBox):
-        return replaced_preferred_width(box, outer)
+        result = replaced_preferred_width(box, outer)
     else:
         raise TypeError(
             'Preferred minimum width for %s not handled yet' %
             type(box).__name__)
+
+    box.preferred_minimum_width = result
+    return result
 
 
 def preferred_width(context, box, outer=True):
@@ -59,18 +66,25 @@ def preferred_width(context, box, outer=True):
     This is the width by only breaking at forced line breaks.
 
     """
+    result = getattr(box, 'preferred_width', None)
+    if result is not None:
+        return result
+
     if isinstance(box, boxes.BlockContainerBox):
         if box.is_table_wrapper:
-            return table_preferred_width(context, box, outer)
+            result = table_preferred_width(context, box, outer)
         else:
-            return block_preferred_width(context, box, outer)
+            result = block_preferred_width(context, box, outer)
     elif isinstance(box, (boxes.InlineBox, boxes.LineBox)):
-        return inline_preferred_width(context, box, outer)
+        result = inline_preferred_width(context, box, outer)
     elif isinstance(box, boxes.ReplacedBox):
-        return replaced_preferred_width(box, outer)
+        result = replaced_preferred_width(box, outer)
     else:
         raise TypeError(
             'Preferred width for %s not handled yet' % type(box).__name__)
+
+    box.preferred_width = result
+    return result
 
 
 def _block_preferred_width(context, box, function, outer):
